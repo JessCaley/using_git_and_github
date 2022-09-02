@@ -146,7 +146,8 @@ data_clean %>%
   group_by(species) %>%
   summarise(mean_sl = mean(sl), 
             mean_activity = mean(activity),
-            se_sl = sd(sl)/length(sl))
+            se_sl = sd(sl)/length(sl),
+            se_activity = sd(activity)/length(activity))
 
 # Use flextable to render the summary table in a tidy format
 
