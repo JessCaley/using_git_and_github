@@ -85,7 +85,7 @@ Hopefully you also created and/or downloaded the following files and added them 
 
 **STOP**: Before moving on, it's a good time to establish some good *GitHub* practices. You have just did an important step -- you added a bunch of new files. It's time stage these files and commit them so that you have a record. Use *GitHub Desktop* to do this. 
 
-This is also a very good point to make sure that you understand relative path names fo coding. Wait, "relative what?". Your working directory can be considered the 'lowest' level of your project. The starting point, if you will. R needs to know where your files are that you want to load. Many people might be familiar with using the `setwd()` function to tell R where your files are that you need to load. This is problematic because everyone's path to a given working directory is different, and so, your code will not work on others' computers. Even across your own computers!
+This is also a very good point to make sure that you understand relative path names for coding. Wait, "relative what?". Your working directory can be considered the 'lowest' level of your project. The starting point, if you will. R needs to know where your files are that you want to load. Many people might be familiar with using the `setwd()` function to tell R where your files are that you need to load. This is problematic because everyone's path to a given working directory is different, and so, your code will not work on others' computers. Even across your own computers!
 
 Lucky, RStudio project files take away the main issue by creating a project file that allows anyone to click on it to open the working directory to the same "spot". Having said that, if you start building structure (i.e., folders) in your working directory or repo than you need to understand how to navigate between folders to load and write files in the places that you want. 
 
@@ -95,11 +95,12 @@ Make sure you have added a `data/` folder to your working directory that you jus
 
 Write your answer in the code chunk below:
 
-```{r, loaddata, eval = FALSE, echo=TRUE}
+```{r, loaddata, eval = TRUE, echo=TRUE}
+# getwd()
 
-path <- "replace this text with your relative path to a file in the 'data/' folder"
+path <- "./data/OA_activitydat_20190302_BIOL3207.csv"
   
-data <- read_csv(path)
+data <- read.csv(path)
 
 ```
 
@@ -109,9 +110,9 @@ Let's say that you added a new data folder that was inside an output folder (i.e
 
 ```{r, write, eval = FALSE, echo=TRUE}
 
-path <- "replace this text with your relative path"
+path <- "./output/data/cleaned_data.csv"
 
-write_csv(data, file = path)
+write.csv(data, file = path)
 
 ```
 
@@ -124,15 +125,25 @@ First, write some code below to remove missing data
 
 ```{r, rmMiss}
 # Code to removing missing data from the `OA_activitydat_20190302_BIOL3207.csv` data frame. 
-
+data_clean <- na.omit(data)
 ```
 
 Second, drop out irrelevant columns and check that there are no spelling issues in `species` and `treatment`. Create a table of summary data that includes: 1) the mean, 2) the standard error and 3) the sample sizes of unique fish across ALL six fish species for each treatment. This will also help you detect any spelling errors. You can use the R package [`flextable`](https://ardata-fr.github.io/flextable-book/) to print out the results in a nice neat format! If you haven't heard about `flextable` spend 10 or so minutes having a look at it's functionality. It's incredible! You'll use this for tables throughout.
 
 ```{r summaryTab}
 # Drop irrelevant columns
-
+data_clean <- subset(data_clean, select = -c(X, comment))
 # Check spelling in species and treatment but also generate a summary table
+data_clean$species <- as.factor(data_clean$species)
+data_clean$treatment <- as.factor(data_clean$treatment)
+levels(data_clean$species)
+levels(data_clean$treatment)
+
+data_clean %>% 
+  group_by(species) %>%
+  summarise(mean_sl = mean(sl), 
+            mean_activity = mean(activity),
+            se_sl = sd(sl)/length(sl))
 
 # Use flextable to render the summary table in a tidy format
 
