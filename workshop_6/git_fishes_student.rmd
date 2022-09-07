@@ -17,7 +17,7 @@ options(digits=2)
 ```
 
 ```{r}
-library(tidyverse)
+# library(tidyverse)
 ```
 # **Introduction**
 
@@ -29,7 +29,7 @@ Throughout we are also going to learn a bit more about how to format Rmarkdown d
 
 ```{r loadpacks, message=FALSE, results='hide'}
 # Install a load of packages that we'll use. I'll show you a shortcut that I love to use. Try using the p_load function in the "pacman" package. p_load will execute both the install.packages and library commands in one shot so they only need to be used once to install pacman itself.
-install.packages("pacman", repos = "http://cran.us.r-project.org")
+# install.packages("pacman", repos = "http://cran.us.r-project.org")
 library(pacman)
 
 # Install bookdown for rendering because we'll need this. While we're at it, lets also install /load the tidyverse
@@ -57,9 +57,9 @@ This task involves cloning your repository on your computer. Where should we pla
 ```{r, answer1, echo=TRUE, eval = FALSE}
 
 ## Write your answer here. 
-It doesnt back up your files? 
-Intended to be version control
 
+GitHub is intended to be version control
+Also for security reasons, as repositories can be targeted by ransomware attacks. 
 
 ```
 
@@ -70,7 +70,6 @@ Before moving on you might have noticed that the code block above has a name `an
 >**Question 2**: In the second code block called `answer1` if we change echo = TRUE to echo = FALSE what will happen to the code block `answer1` when you render it?
 
 ```{r answer2, echo=TRUE, eval = FALSE}
-# Write your answer here
 It no longer appears in the rendered html file
 ```
 
@@ -99,12 +98,8 @@ Make sure you have added a `data/` folder to your working directory that you jus
 Write your answer in the code chunk below:
 
 ```{r, loaddata, eval = TRUE, echo=TRUE}
-# getwd()
-
 path <- "./data/OA_activitydat_20190302_BIOL3207.csv"
-  
 data <- read.csv(path)
-
 ```
 
 Let's say that you added a new data folder that was inside an output folder (i.e., `output/data`) to your working directory. The purpose of this folder is to store and track your cleaned up data frame after you have done all your data wrangling and corrections. 
@@ -135,29 +130,34 @@ Second, drop out irrelevant columns and check that there are no spelling issues 
 
 ```{r summaryTab}
 # Drop irrelevant columns
-data_clean <- subset(data_clean, select = -c(X, comment))
+data_clean <- subset(data_clean, select = -c(X, comment, loc, size, animal_id))
+
 # Check spelling in species and treatment but also generate a summary table
+# convert values in species and treatment to factors
 data_clean$species <- as.factor(data_clean$species)
 data_clean$treatment <- as.factor(data_clean$treatment)
+# Look at all the different values in each column
+# don't appear to be any spelling issues
 levels(data_clean$species)
 levels(data_clean$treatment)
 
+# Generate summary table
 data_clean %>% 
   group_by(species) %>%
-  summarise(mean_sl = mean(sl), 
+  summarise(mean_length = mean(sl), 
+            standard_error_length = sd(sl)/length(sl),
             mean_activity = mean(activity),
-            standard_error_sl = sd(sl)/length(sl),
             standard_error_activity = sd(activity)/length(activity),
-            size = length(species))
+            sample_size = length(species))
 
 # Use flextable to render the summary table in a tidy format
 data_clean %>% 
   group_by(species) %>%
-  summarise(mean_sl = mean(sl), 
+  summarise(mean_length = mean(sl), 
+            standard_error_length = sd(sl)/length(sl),
             mean_activity = mean(activity),
-            standard_error_sl = sd(sl)/length(sl),
             standard_error_activity = sd(activity)/length(activity),
-            size = length(species)) %>% 
+            sample_size = length(species)) %>% 
   flextable()
 ```
 
@@ -165,8 +165,8 @@ data_clean %>%
 
 >**Question 5**: The new version of your Rmarkdown file should now be up on *GitHub*. In the browser window click on your most recent commit. Have a look at the file versioning system. You will notice two files side-by-side. Describe what you notice is being presented online. What do the red and green highlights mean?
 
-```{r answer5, echo=TRUE, eval=FALSE}
-## Write your answer here....remember to use '#" in front of your text.
+```{r answer5, echo=TRUE, eval=TRUE}
+# 
 ```
 
 # **Task 5**
