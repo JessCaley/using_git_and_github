@@ -134,7 +134,7 @@ data_clean <- subset(data_clean, select = -c(X, comment, loc, size, animal_id))
 data_clean$species <- as.factor(data_clean$species)
 data_clean$treatment <- as.factor(data_clean$treatment)
 # Look at all the different values in each column
-# don't appear to be any spelling issues
+# don't appear to be any spelling issues (but whitedams isn't listed in the description in the html instructions?)
 levels(data_clean$species)
 levels(data_clean$treatment)
 
@@ -183,6 +183,19 @@ ggplot(data = data_clean, aes(y = activity, colour = treatment)) +
 
 **Stretch Task**: The Clark et al. 2020 paper plots some pretty pictures on their figures. You have access to a folder called "pics/". Add the pics of the difference species from the "pics/" folder to your new plot. Explore the function `annotation_raster()` which might help you achieve this goal.
 
+```{r}
+# read in images
+chromis <- readPNG("./pics/chromis.png")
+ambon <- readPNG("./pics/ambon.png")
+humbug <- readPNG("./pics/humbug.png")
+lemon <- readPNG("./pics/lemon.png")
+acantho <- readPNG("./pics/acantho.png")
+whitedams <- readPNG("./pics/whitedams.png")
+
+
+```
+
+
 Note the code chunk used to make the figure. It has a `fig.cap` argument. That means Rmarkdown knows it's a figure and it will allow you to create a figure reference call. In other words, we can refer to our Figure \@ref(fig:prettyfig) by referring to the label for the chunk. This will automatically make a legend for us too (assuming you add one in). The same concept applied to Tables but the legend goes above these.
 
 Now that you have the figure you may also want to write / save it as a separate file. Use `ggsave` function to save the figure(s) to your new `output/figures/`:
@@ -204,7 +217,7 @@ Last question for this task. I promise! It's important to think very carefully a
 >**Question 7**: Assume that you added the `pics/` folder to your working directory to plot pictures of each fish on your figure. Do you want to track the files in the pic/ folder on GitHub despite them being .png files? Explain your reasoning. 
 
 ```{r, answer6}
-## Add your answer here
+# No, because they are available to re-download from the original paper
 ```
 
 # **Task 6**
