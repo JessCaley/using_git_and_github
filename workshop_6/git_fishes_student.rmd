@@ -149,13 +149,8 @@ data_summary <- data_clean %>%
 data_summary
 
 # Use flextable to render the summary table in a tidy format
-data_clean %>% 
+data_summary %>% 
   group_by(species) %>%
-  summarise(mean_length = mean(sl), 
-            standard_error_length = sd(sl)/length(sl),
-            mean_activity = mean(activity),
-            standard_error_activity = sd(activity)/length(activity),
-            sample_size = length(species)) %>% 
   flextable()
 ```
 
