@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-./workshop_6/output/figures
-./workshop_6/pics
+./workshop_6/output/figures/
+./workshop_6/pics/
+./workshop_6/a_folder_to_ignore/

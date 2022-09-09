@@ -205,11 +205,23 @@ Now that you have the figure you may also want to write / save it as a separate 
 ggsave('./output/figures/CO2_vs_control_species_activity.png', width = 6, height = 4)
 ```
 
+```{r}
+# making another figure because I'm not sure I added output/figures/ to my .gitignore correctly
+ggplot(data = data_clean, aes(y = activity, colour = species)) +
+  geom_boxplot() +
+  facet_grid(~treatment)
+
+# save figure
+ggsave('./output/figures/species_activity_by_treatment.png', width = 6, height = 4)
+
+```
+
+
+
 >**Question 6**: Given that you have added `output/figures/` to your `.gitignore` file describe what you notice about what you see in *GitHub Desktop*. 
 
 ```{r}
-## Write your answer here
-
+# The changes to .gitignore is tracked, but there is no indication that output/figures has had a figure added to it
 ```
 
 Last question for this task. I promise! It's important to think very carefully about what you track and ignore.
@@ -217,7 +229,7 @@ Last question for this task. I promise! It's important to think very carefully a
 >**Question 7**: Assume that you added the `pics/` folder to your working directory to plot pictures of each fish on your figure. Do you want to track the files in the pic/ folder on GitHub despite them being .png files? Explain your reasoning. 
 
 ```{r, answer6}
-# No, because they are available to re-download from the original paper
+# No, because they are available to re-download from the original paper and won't be changed by data processing
 ```
 
 # **Task 6**
@@ -225,7 +237,7 @@ This task involves teaming up with a collaborator. Exchange *GitHub* username de
 
 Now, lets create a new figure in the code block below that simplifies the one produced in **Task 5**. Instead of all species, lets just plot three of the species (chromis, lemon, and acantho). In the figure code chunk make sure you add the necessary arguments (e.g., `fig.cap`) so that you can refer to Figure \@ref(fig:collabFig).
 
-```{r, collabFig, echo=TRUE, eval=TRUE}
+```{r, collabFig, echo=TRUE, eval=TRUE, fig.cap="acantho, chromis, lemon: activity by treatment"}
 # You want to make changes to your collaborators figure in Task 5. Maybe you want to create a figure that focuses only on three fish species instead of the 5. More specifically, chromis, lemon, and acantho. Add code here to revise their figure to do that.
 data_clean %>% filter(species %in% c("chromis", "lemon", "acantho") ) %>%
   ggplot(aes(y = activity, colour = treatment)) +
@@ -266,14 +278,49 @@ Here, run some statistical tests to determine, for each species, whether the con
 
 ```{r}
 # "acantho"   "ambon"     "chromis"   "humbug"    "lemon"     "whitedams"
-t.test(activity ~ treatment, data = filter(data_clean, species == "acantho"))
-summary(aov(activity ~ treatment, data = filter(data_clean, species == "acantho")))
 
-t.test(activity ~ treatment, data = filter(data_clean, species == "ambon"))
-t.test(activity ~ treatment, data = filter(data_clean, species == "chromis"))
-t.test(activity ~ treatment, data = filter(data_clean, species == "humbug")) # 
-t.test(activity ~ treatment, data = filter(data_clean, species == "lemon"))
-t.test(activity ~ treatment, data = filter(data_clean, species == "whitedams"))
+# Looking at whether activity differs between treatments for each species
+
+# t.tests
+t_acantho <- t.test(activity ~ treatment, data = filter(data_clean, species == "acantho"))
+summary(aov(activity ~ treatment, data = filter(data_clean, species == "acantho")))
+t_ambon <- t.test(activity ~ treatment, data = filter(data_clean, species == "ambon"))
+t_chromis <- t.test(activity ~ treatment, data = filter(data_clean, species == "chromis"))
+t_humbug <- t.test(activity ~ treatment, data = filter(data_clean, species == "humbug")) # 
+t_lemon <-t.test(activity ~ treatment, data = filter(data_clean, species == "lemon"))
+t_whitedams <- t.test(activity ~ treatment, data = filter(data_clean, species == "whitedams"))
+
+# difference in means
+t_acantho$estimate[1]-t_acantho$estimate[2]
+t_ambon$estimate[1]-t_ambon$estimate[2]
+t_chromis$estimate[1]-t_chromis$estimate[2]
+t_humbug$estimate[1]-t_humbug$estimate[2] # t.test was significant
+t_lemon$estimate[1]-t_lemon$estimate[2]
+t_whitedams$estimate[1]-t_whitedams$estimate[2]
+
+# 95% confidence intervals
+t_acantho$conf.int
+t_ambon$conf.int 
+t_chromis$conf.int 
+t_humbug$conf.int  # 
+t_lemon$conf.int 
+t_whitedams$conf.int
+
+# degrees of freedom
+t_acantho$parameter
+t_ambon$parameter
+t_chromis$parameter 
+t_humbug$parameter  # 
+t_lemon$parameter
+t_whitedams$parameter
+
+# p-values
+t_acantho$p.value
+t_ambon$p.value
+t_chromis$p.value
+t_humbug$p.value  # 
+t_lemon$p.value
+t_whitedams$p.value
 ```
 
 
