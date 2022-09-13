@@ -192,7 +192,15 @@ lemon <- readPNG("./pics/lemon.png")
 acantho <- readPNG("./pics/acantho.png")
 whitedams <- readPNG("./pics/whitedams.png")
 
-
+ggplot(data = data_clean, aes(y = activity, x = species, colour = treatment)) +
+  geom_boxplot() +
+#  facet_grid(~species) + 
+  annotation_raster(acantho, 0.5, 1.4, 55, 60) +
+  annotation_raster(ambon, 1.5, 2.4, 55, 60) +
+  annotation_raster(chromis, 2.5, 3.4, 55, 60)  +
+  annotation_raster(humbug, 3.5, 4.4, 55, 60) + 
+  annotation_raster(lemon, 4.5, 5.4, 55, 60) + 
+  annotation_raster(whitedams, 5.5, 6.4, 55, 60)
 ```
 
 
