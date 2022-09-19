@@ -202,6 +202,9 @@ ggplot(data = data_clean, aes(y = activity, x = species, colour = treatment)) +
   annotation_raster(lemon, 4.5, 5.4, 55, 60) + 
   annotation_raster(whitedams, 5.5, 6.4, 55, 60)
 ```
+```{r}
+ggsave('./output/figures/CO2_vs_control_species_activity_w_pictures.png', width = 6, height = 4)
+```
 
 
 Note the code chunk used to make the figure. It has a `fig.cap` argument. That means Rmarkdown knows it's a figure and it will allow you to create a figure reference call. In other words, we can refer to our Figure \@ref(fig:prettyfig) by referring to the label for the chunk. This will automatically make a legend for us too (assuming you add one in). The same concept applied to Tables but the legend goes above these.
@@ -230,6 +233,7 @@ ggsave('./output/figures/species_activity_by_treatment.png', width = 6, height =
 
 ```{r}
 # The changes to .gitignore is tracked, but there is no indication that output/figures has had a figure added to it
+# okay no there is? The image is shown as a changed file in GitHub Desktop
 ```
 
 Last question for this task. I promise! It's important to think very carefully about what you track and ignore.
@@ -311,7 +315,7 @@ t_acantho$conf.int
 t_ambon$conf.int 
 t_chromis$conf.int 
 t_humbug$conf.int  # 
-t_lemon$conf.int 
+t_lemon$conf.int
 t_whitedams$conf.int
 
 # degrees of freedom
@@ -336,14 +340,35 @@ t_whitedams$p.value
 >**Stretch Task**: You can of course do this for each species seperately, but those who want a challenge, think about how you might use a loop or even some wrangling methods you have already learnt from the tidyverse to run these tests across all 6 species in a single block of code. If you're familiar with functions, you can even think about writing your own function! All these strategies will avoid having to copy and paste large chunks of code. If you're repeating anything, writing functions and loops are good ways to simplify.
 
 ```{r, stats, echo=TRUE, eval=TRUE}
-# Add your code here
+# is the difference between CO2 treatment and control significant, if so what direction?
+# For each species calculate and save
 
+# data frame to save to
+species_stats <- data.frame(row.names = levels(data_clean$species))
 
-
+for(fish in levels(data_clean$species)){
+  # filter data for just that species
+  sp <- filter(data_clean, species == fish)
+  # complete t test
+  t_test <- t.test(data = sp, activity ~ treatment)
+  # difference in means, co2 - control
+  species_stats[fish, "diff_means"] <- t_test$estimate[1]-t_test$estimate[2]
+  # 95% confidence interval
+  species_stats[fish, "conf_int_min"] <- t_test$conf.int[1]
+  species_stats[fish, "conf_int_max"] <- t_test$conf.int[2]
+  # t statistic
+  species_stats[fish, "t_stat"] <- t_test$statistic
+  # degrees of freedom
+  species_stats[fish, "d_f"] <- t_test$parameter
+  # p value
+  species_stats[fish, "p_val"] <- t_test$p.value
+}
+species_stats
 ```
 
 ```{r, table1, echo=TRUE, eval=TRUE, tab.cap = "write a caption here"}
 # Using the resulting object created above, which should be a table with all the summary statistics, t, df and p-value for each species create a table. Note that there is a tab.cap argument in the chunk arguments. Write a caption here. 
+species_stats %>% flextable() # doesn't have row names, useless!!!! 
 ```
 
 Now that you have a table, you can reference it within a document. For example, you can make a call to Table \@ref(tab:table1) by referring to the name of the code chunk. When you knit the html it will create a hyperlink to your table and insert a legend above the table for you. How cool is that!?
